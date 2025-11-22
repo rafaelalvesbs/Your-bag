@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Your Bag</title>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(#0a4cff, #78aaff);
+        font-family: Arial, sans-serif;
+    }
+
+    h1 {
+        text-align: center;
+        color: white;
+        padding: 20px 0;
+        font-size: 36px;
+    }
+
+    #container {
+        display: flex;
+        justify-content: space-around;
+        padding: 20px;
+    }
+
+    .board {
+        width: 45%;
+        height: 560px;
+        background: rgba(255,255,255,0.2);
+        backdrop-filter: blur(4px);
+        border-radius: 12px;
+        padding: 15px;
+        display: grid;
+        grid-template-columns: repeat(10, 1fr);
+        grid-auto-rows: 45px;
+        gap: 8px;
+        overflow: hidden;
+    }
+
+    .cell {
+        background: rgba(255,255,255,0.6);
+        border-radius: 6px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 14px;
+        cursor: grab;
+        user-select: none;
+    }
+
+    .cell.dragging {
+        opacity: 0.4;
+    }
+
+    #counterBox {
+        position: fixed;
+        top: 15px;
+        right: 25px;
+        background: white;
+        padding: 10px 14px;
+        border-radius: 10px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+
+<h1>Your Bag</h1>
+<div id="counterBox">Selected: <span id="count">0</span></div>
+
+<div id="container">
+    <div class="board" id="leftBoard"></div>
+    <div class="board" id="rightBoard"></div>
+</div>
+
+<script>
+const words = [
+    "cat","dog","sun","book","car","tree","house","milk","water","pen",
+    "school","apple","chair","desk","hand","foot","ball","street","fish","bird",
+    "mother","father","sister","brother","child","baby","friend","teacher","student","family",
+    "city","country","food","drink","window","door","bed","night","day","music",
+    "happy","sad","big","small","hot","cold","fast","slow","old","young",
+    "walk","run","sleep","eat","read","write","listen","speak","open","close",
+    "blue","red","green","yellow","black","white","orange","pink","brown","purple",
+    "rice","bread","cheese","egg","sugar","salt","tea","coffee","juice","meat",
+    "head","arm","leg","nose","eye","ear","mouth","hair","face","back",
+    "work","play","travel","study","buy","sell","drive","cook","clean","help"
+];
+
+const left = document.getElementById("leftBoard");
+const right = document.getElementById("rightBoard");
+const countSpan = document.getElementById("count");
+
+function renderWords() {
+    words.forEach(w => {
+        const cell = document.createElement("div");
+        cell.className = "cell";
+        cell.draggable = true;
+        cell.textContent = w;
+        cell.addEventListener("dragstart", dragStart);
+        cell.addEventListener("dragend", dragEnd);
+        left.appendChild(cell);
+    });
+}
+
+function dragStart(e) {
+    e.dataTransfer.setData("text", e.target.textContent);
+    e.target.classList.add("dragging");
+}
+
+function dragEnd(e) {
+    e.target.classList.remove("dragging");
+}
+
+[right, left].forEach(board => {
+    board.addEventListener("dragover", e => e.preventDefault());
+    board.addEventListener("drop", function(e) {
+        const word = e.dataTransfer.getData("text");
+        const dragged = [...document.querySelectorAll('.cell')].find(c => c.textContent === word);
+        board.appendChild(dragged);
+        sound.currentTime = 0;
+        sound.play();(dragged);
+        const sound = document.getElementById('dropSound');
+    updateCount();
+    });
+});
+
+function updateCount() {
+    countSpan.textContent = right.children.length;
+}
+
+renderWords();
+</script>
+<audio id="dropSound" src="https://actions.google.com/sounds/v1/cartoon/pop.ogg"></audio>
+</body>
+</html>
