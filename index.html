@@ -716,8 +716,8 @@ function finishGame() {
     
     // Atualizar o score no modal
     scoreNumber.textContent = count;
-    scorePercentage.textContent = ${percentage}% Complete;
-    resultText.textContent = Você identificou ${count} de ${words.length} palavras em inglês;
+    scorePercentage.textContent = `${percentage}% Complete`;
+    resultText.textContent = `Você identificou ${count} de ${words.length} palavras em inglês`;
     
     // Mensagens personalizadas baseadas no número de palavras
     if (count <= 20) {
