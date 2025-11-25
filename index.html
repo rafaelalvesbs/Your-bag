@@ -210,10 +210,13 @@
     }
 
     .cell {
-        /* CRUCIAL PARA O GRID RESPONDER AO ENCOLHIMENTO */
+        /* CRUCIAL: Permite que a célula encolha */
         min-width: 0; 
-        /* GARANTE QUE O TEXTO FIQUE EM UMA ÚNICA LINHA, JÁ QUE A CÉLULA VAI ENCOLHER */
+        
+        /* SOLUÇÃO DEFINITIVA PARA TRUNCAGEM */
         white-space: nowrap; 
+        overflow: hidden; 
+        text-overflow: ellipsis; 
         
         background: rgba(255,255,255,0.9);
         border-radius: 8px;
@@ -227,10 +230,7 @@
         transition: all 0.2s ease;
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         border: 2px solid transparent;
-        /* Oculta texto que não cabe (geralmente não necessário com 'min-width: 0', mas é uma segurança) */
-        overflow: hidden; 
-        text-overflow: ellipsis;
-        padding: 0 5px; /* Adicionado padding horizontal mínimo para o texto */
+        padding: 0 5px; 
     }
 
     .cell:hover {
@@ -450,7 +450,8 @@
         <div class="encouragement-box">
             <p id="encouragementText"></p>
         </div>
-        <p id="resultText" style="color: #666; font-size: 16px;"></p>
+        <p id="resultText" style="color: #666; font-size: 16px;">
+        </p>
         <div class="modal-buttons">
             <button id="restartModal" class="modal-button">🔄 New Test</button>
             <button id="closeModal" class="modal-button">👍 Close</button>
