@@ -6,6 +6,7 @@
 <title>Your Bag</title>
 
 <style>
+    /* ... (CSS anterior omitido por brevidade, mas permanece igual) ... */
     * {
         box-sizing: border-box;
     }
@@ -184,7 +185,6 @@
         grid-template-columns: repeat(10, 1fr);
         grid-auto-rows: 45px;
         gap: 8px;
-        /* GARANTE QUE O CONTEÚDO NÃO FORÇE O CONTAINER A AUMENTAR */
         overflow: hidden; 
     }
 
@@ -203,17 +203,12 @@
         }
     }
 
-    @media(max-width: 480px) {
-        .board {
-            grid-template-columns: repeat(3, 1fr);
-        }
-    }
-
     .cell {
-        /* CRUCIAL: Permite que a célula encolha */
         min-width: 0; 
         
-        /* SOLUÇÃO DEFINITIVA PARA TRUNCAGEM */
+        /* AJUSTE DE FONTE PARA 12PX */
+        font-size: 12px;
+        
         white-space: nowrap; 
         overflow: hidden; 
         text-overflow: ellipsis; 
@@ -223,7 +218,6 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        font-size: 14px;
         font-weight: 500;
         cursor: grab;
         user-select: none;
@@ -232,6 +226,18 @@
         border: 2px solid transparent;
         padding: 0 5px; 
     }
+
+    /* AJUSTE RESPONSIVO DA FONTE PARA TELAS MUITO PEQUENAS (MOBILE) */
+    @media(max-width: 480px) {
+        .board {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        .cell {
+            font-size: 10px; /* Redução para 10px em mobile */
+            padding: 0 3px; /* Redução do padding */
+        }
+    }
+
 
     .cell:hover {
         background: rgba(255,255,255,1);
@@ -450,8 +456,7 @@
         <div class="encouragement-box">
             <p id="encouragementText"></p>
         </div>
-        <p id="resultText" style="color: #666; font-size: 16px;">
-        </p>
+        <p id="resultText" style="color: #666; font-size: 16px;"></p>
         <div class="modal-buttons">
             <button id="restartModal" class="modal-button">🔄 New Test</button>
             <button id="closeModal" class="modal-button">👍 Close</button>
