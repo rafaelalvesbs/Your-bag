@@ -184,6 +184,8 @@
         grid-template-columns: repeat(10, 1fr);
         grid-auto-rows: 45px;
         gap: 8px;
+        /* GARANTE QUE O CONTEÚDO NÃO FORÇE O CONTAINER A AUMENTAR */
+        overflow: hidden; 
     }
 
     .board.drag-over {
@@ -208,8 +210,10 @@
     }
 
     .cell {
-        /* CORREÇÃO ADICIONADA AQUI: Permite que a célula encolha em telas pequenas */
+        /* CRUCIAL PARA O GRID RESPONDER AO ENCOLHIMENTO */
         min-width: 0; 
+        /* GARANTE QUE O TEXTO FIQUE EM UMA ÚNICA LINHA, JÁ QUE A CÉLULA VAI ENCOLHER */
+        white-space: nowrap; 
         
         background: rgba(255,255,255,0.9);
         border-radius: 8px;
@@ -223,8 +227,10 @@
         transition: all 0.2s ease;
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         border: 2px solid transparent;
-        /* Adicionado para quebra de palavras longas em português, se necessário */
-        overflow-wrap: break-word; 
+        /* Oculta texto que não cabe (geralmente não necessário com 'min-width: 0', mas é uma segurança) */
+        overflow: hidden; 
+        text-overflow: ellipsis;
+        padding: 0 5px; /* Adicionado padding horizontal mínimo para o texto */
     }
 
     .cell:hover {
@@ -452,7 +458,7 @@
     </div>
 </div>
 
-<audio id="dropSound" src="https://actions.google.com/sounds/v1/cartoon/pop.ogg"></audio>
+<audio id="dropSound" src="https://actions.google.com/sounds/v1/alarms/chime_short.ogg"></audio>
 
 <script>
 // Array de 100 palavras ÚNICAS (atualizado com 'thing' e 'lapbook')
