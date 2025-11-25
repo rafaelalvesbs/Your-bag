@@ -82,7 +82,7 @@
         height: 100%;
         width: 0%;
         background: linear-gradient(90deg, #4CAF50, #8BC34A);
-        transition: width 0.5s ease;
+        transition: width 0.5s ease, background 0.5s ease;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -450,19 +450,21 @@
 <audio id="dropSound" src="https://actions.google.com/sounds/v1/cartoon/pop.ogg"></audio>
 
 <script>
+// Array de 100 palavras ÚNICAS (atualizado com 'thing' e 'lapbook')
 const words = [
 "Hang Out","Can","Black","Doctor","Japan","Stepfather","Teacher","Monday","Pretty","Leave",
 "Engineer","Brazil","Germany","Nurse","Tuesday","Eight","Lost","Artist","Canada","UK",
-"Police Officer","Wednesday","Come","Found","Chef","Mexico","Have","Driver","Thursday","Clean",
+"Police Officer","Wednesday","Come","Found","Chef","Mexico","Have","Driver","Thursday","thing",
 "Purse","Student","Italy","Handsome","Journalist","Friday","Spell","His","Lawyer","Spain",
 "Saturday","Restroom","Waiter","India","Sunday","Their","Singer","China","Am","Writer",
-"Korea","Is","Farmer","Germany","Morning","Evening","Night","Happy","Sad","Angry",
+"Korea","Is","Farmer","lapbook","Morning","Evening","Night","Happy","Sad","Angry",
 "Tired","Hungry","Thirsty","Hot","Cold","Big","Small","Fast","Slow","Old",
 "Young","New","Beautiful","Ugly","Strong","Weak","Easy","Hard","Short","Tall",
 "Clean","Dirty","Open","Close","Sit","Stand","Run","Walk","Jump","Eat",
 "Drink","Read","Write","Take","Often","Dry","Fly","Cry","Bottle","Pastry"
 ];
 
+// Referências de Elementos
 const left = document.getElementById("leftBoard");
 const right = document.getElementById("rightBoard");
 const countSpan = document.getElementById("count");
@@ -554,7 +556,7 @@ function renderWords() {
         cell.draggable = true;
         cell.textContent = word;
 
-        // Eventos de drag padrão
+        // Eventos de drag padrão (Desktop)
         cell.addEventListener("dragstart", dragStart);
         cell.addEventListener("dragend", dragEnd);
 
@@ -562,9 +564,25 @@ function renderWords() {
         cell.addEventListener("touchstart", touchStart, { passive: false });
         cell.addEventListener("touchmove", touchMove, { passive: false });
         cell.addEventListener("touchend", touchEnd, { passive: false });
+        
+        // Adicionando evento de clique duplo como alternativa de acessibilidade
+        cell.addEventListener("dblclick", dblClickMove);
 
         left.appendChild(cell);
     });
+    updateCount();
+}
+
+// === ALTERNATIVA DE CLIQUE DUPLO ===
+function dblClickMove(e) {
+    const cell = e.target;
+    if (cell.parentElement === left) {
+        right.appendChild(cell);
+    } else {
+        left.appendChild(cell);
+    }
+    sound.currentTime = 0;
+    sound.play();
     updateCount();
 }
 
@@ -595,7 +613,7 @@ function enableDrop(board) {
         const word = e.dataTransfer.getData("text");
         const dragged = [...document.querySelectorAll('.cell')].find(c => c.textContent === word);
 
-        if (dragged) {
+        if (dragged && dragged.parentElement !== board) {
             board.appendChild(dragged);
             sound.currentTime = 0;
             sound.play();
@@ -611,6 +629,9 @@ let offsetX = 0;
 let offsetY = 0;
 
 function touchStart(e) {
+    // Verificar se é um touch no elemento 'cell'
+    if (!e.target.classList.contains('cell')) return;
+
     touchedElement = e.target;
     touchedElement.classList.add("dragging");
     
@@ -619,7 +640,7 @@ function touchStart(e) {
     offsetX = touch.clientX - rect.left;
     offsetY = touch.clientY - rect.top;
     
-    // Criar clone visual
+    // Criar clone visual para seguir o toque
     clone = touchedElement.cloneNode(true);
     clone.style.position = "fixed";
     clone.style.pointerEvents = "none";
@@ -674,7 +695,7 @@ function touchEnd(e) {
     }
     
     touchedElement = null;
-    e.preventDefault();
+    // Sem preventDefault aqui para permitir rolagem após o drop
 }
 
 function updateCount() {
@@ -696,6 +717,7 @@ function updateCount() {
 }
 
 function resetGame() {
+    // Melhorando o diálogo de confirmação
     if (confirm("⚠️ Tem certeza que deseja recomeçar? Isto irá resetar todo o seu progresso.")) {
         renderWords();
         closeModal();
