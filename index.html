@@ -6,7 +6,6 @@
 <title>Your Bag</title>
 
 <style>
-    /* ... (CSS anterior omitido por brevidade, mas permanece igual) ... */
     * {
         box-sizing: border-box;
     }
@@ -206,8 +205,8 @@
     .cell {
         min-width: 0; 
         
-        /* AJUSTE DE FONTE PARA 12PX */
-        font-size: 12px;
+        /* AJUSTE DE FONTE PARA 10PX */
+        font-size: 10px;
         
         white-space: nowrap; 
         overflow: hidden; 
@@ -224,7 +223,7 @@
         transition: all 0.2s ease;
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         border: 2px solid transparent;
-        padding: 0 5px; 
+        padding: 0 3px; 
     }
 
     /* AJUSTE RESPONSIVO DA FONTE PARA TELAS MUITO PEQUENAS (MOBILE) */
@@ -233,8 +232,8 @@
             grid-template-columns: repeat(3, 1fr);
         }
         .cell {
-            font-size: 10px; /* Redução para 10px em mobile */
-            padding: 0 3px; /* Redução do padding */
+            font-size: 10px; 
+            padding: 0 3px; 
         }
     }
 
@@ -464,7 +463,7 @@
     </div>
 </div>
 
-<audio id="dropSound" src="https://actions.google.com/sounds/v1/alarms/chime_short.ogg"></audio>
+<audio id="dropSound" src="https://raw.githubusercontent.com/google/material-design-icons/master/media/sound/ding.mp3"></audio>
 
 <script>
 // Array de 100 palavras ÚNICAS (atualizado com 'thing' e 'lapbook')
@@ -590,6 +589,20 @@ function renderWords() {
     updateCount();
 }
 
+// === FUNÇÃO DE REPRODUÇÃO DE ÁUDIO MAIS ROBUSTA ===
+function playDropSound() {
+    // Tenta reproduzir o som. O reset de currentTime = 0 permite que o áudio toque
+    // rapidamente mesmo se o evento for disparado várias vezes.
+    sound.currentTime = 0;
+    sound.play().catch(error => {
+        // Captura e ignora erro de Promise (que é comum em alguns navegadores se o som
+        // não for iniciado por uma interação explícita do usuário, mas no drag/drop
+        // isso deve funcionar após a primeira interação.)
+        console.warn("Could not play sound:", error);
+    });
+}
+
+
 // === ALTERNATIVA DE CLIQUE DUPLO ===
 function dblClickMove(e) {
     const cell = e.target;
@@ -598,8 +611,7 @@ function dblClickMove(e) {
     } else {
         left.appendChild(cell);
     }
-    sound.currentTime = 0;
-    sound.play();
+    playDropSound(); // Usa a função robusta
     updateCount();
 }
 
@@ -632,8 +644,7 @@ function enableDrop(board) {
 
         if (dragged && dragged.parentElement !== board) {
             board.appendChild(dragged);
-            sound.currentTime = 0;
-            sound.play();
+            playDropSound(); // Usa a função robusta
             updateCount();
         }
     });
@@ -698,8 +709,7 @@ function touchEnd(e) {
     
     if (targetBoard && targetBoard !== touchedElement.parentElement) {
         targetBoard.appendChild(touchedElement);
-        sound.currentTime = 0;
-        sound.play();
+        playDropSound(); // Usa a função robusta
         updateCount();
     }
     
